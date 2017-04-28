@@ -76,7 +76,7 @@ func (p *ProxyHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	p.Proxy.ServeHTTP(w, r)
 }
 
-// Transforms requests from SOAP to JSON
+// Transforms requests from JSON to SOAP
 func (p *ProxyHandler) transformRequest(r *http.Request) error {
 	sourceBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
