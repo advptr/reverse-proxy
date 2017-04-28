@@ -28,9 +28,9 @@ type Options struct {
 func main() {
 	args := args()
 	config := config(args.ConfigFile)
-
+	trustedCertPool := config.trustedCertPool()
 	for _, r := range config.Routes {
-		handler := ph.NewWSHandler(r, config.trustedCertPool())
+		handler := ph.NewWSHandler(r, trustedCertPool)
 		http.HandleFunc(handler.Path(), handler.Handle)
 	}
 	log.Printf("reverse-proxy on %v\n", args.ServerAddress)
