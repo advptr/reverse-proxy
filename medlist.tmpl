@@ -1,9 +1,5 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://schemas.carelink.se/rivheader/20060301" xmlns:med="http://medication.publish.cosmicconnect.webservice.cambiosys.se/">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"> 
    <soapenv:Header>
-      <ns:rivHeaderHolder>
-         <ns:SenderId ns:senderIdType="?">{{.SenderId}}</ns:SenderId>
-         <ns:ReceiverId ns:receiverIdType="?">{{.ReceiverId}}</ns:ReceiverId>
-      </ns:rivHeaderHolder>
    </soapenv:Header>
    <soapenv:Body>
       <med:getMedication>
