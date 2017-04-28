@@ -1,0 +1,21 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns="http://schemas.carelink.se/rivheader/20060301" xmlns:med="http://medication.publish.cosmicconnect.webservice.cambiosys.se/">
+   <soapenv:Header>
+      <ns:rivHeaderHolder>
+         <ns:SenderId ns:senderIdType="?">{{.SenderId}}</ns:SenderId>
+         <ns:ReceiverId ns:receiverIdType="?">{{.ReceiverId}}</ns:ReceiverId>
+      </ns:rivHeaderHolder>
+   </soapenv:Header>
+   <soapenv:Body>
+      <med:getMedication>
+         <messageId>{{.messageId}}</messageId>
+         <userId>{{.userId}}</userId>
+         <rcId>{{.rcId}}</rcId>
+         <patientId>{{.patientId}}</patientId>
+         <onlyCurrentMedications>{{.onlyCurrentMedications}}</onlyCurrentMedications>
+         <fromDateTime>{{.fromDateTime}}</fromDateTime>
+         <toDateTime>{{.toDateTime}}</toDateTime>
+         <dataSource>{{.dataSource}}</dataSource>
+      </med:getMedication>
+   </soapenv:Body>
+</soapenv:Envelope>
+
