@@ -1,6 +1,6 @@
 {
   "trust-files": [
-    "test/cert/server.pem"
+    "certs/server.pem"
   ],
   "routes": [
     {
