@@ -22,7 +22,7 @@ type Route struct {
 
 //
 func (r *Route) loadClientCert() (tls.Certificate) {
-	if strings.HasSuffix(r.CertFile, ".pem") {
+	if strings.HasSuffix(strings.ToLower(r.CertFile), ".pem") {
 		return r.loadPemCert()
 	} else {
 		return r.loadPxfCert()
