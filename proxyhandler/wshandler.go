@@ -70,7 +70,7 @@ func (p *ProxyHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Transform %v\n", p.Route.Transform.Template)
 		err := p.transformRequest(r)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}
 	p.Proxy.ServeHTTP(w, r)
