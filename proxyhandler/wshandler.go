@@ -43,13 +43,12 @@ func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
 	}
 
 	proxy.Director = director(route.Service)
+	proxyHandler := &ProxyHandler{Route: route, Proxy: proxy}
+
 	if route.Transform != nil {
 		log.Printf("Transformer: %v -> %v\n", route.Name, route.Transform.RequestTemplate)
 		route.Transform.Template = template.Must(template.New(route.Name).ParseFiles(route.Transform.RequestTemplate))
 		route.Transform.Template.Option("missingkey=zero")
-	}
-	proxyHandler := &ProxyHandler{Route: route, Proxy: proxy}
-	if route.Transform != nil {
 		proxy.ModifyResponse = proxyHandler.transformResponse
 	}
 
