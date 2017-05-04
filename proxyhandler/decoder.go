@@ -46,14 +46,14 @@ func NewDecoder(r io.Reader, schema map[string]xsdElement) *Decoder {
 }
 
 // Decodes XML
-// returnElementName indicates the element to return, otherwise the root element is returned
+// label indicates the element to return, otherwise the root element is returned
 func (dec *Decoder) Decode(root *Node, label string) (*Node, error) {
 
 	xmlDec := xml.NewDecoder(dec.reader)
 
 	element := &Element{parent:nil, node:root}
 
-	var section *Node = nil
+	var section *Node = root
 
 	for {
 		t, err := xmlDec.Token()
