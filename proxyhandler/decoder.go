@@ -89,22 +89,6 @@ func (dec *Decoder) Decode(root *Node, label string) (*Node, error) {
 }
 
 
-// finds a section by label name
-func (n* Node) find(label string) (*Node) {
-	log.Printf("find: %v -> %v\n", n, label)
-	for l, children := range n.Children {
-		for _, child := range children {
-			if l == label {
-				log.Printf("Section found %v\n", child)
-				return child
-			}
-			log.Printf("Label not found %v -> %v\n", child, label)
-			return child.find(label)
-		}
-	}
-	return nil
-}
-
 // encodes to json
 func (n *Node) encode() ([]byte, error) {
 	object := n.serialize()
