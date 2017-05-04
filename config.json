@@ -6,7 +6,7 @@
     {
       "name": "getMedicationJSON",
       "path": "/getMedication",
-      "service": "http://mock_cosmic_1:8080",
+      "service": "http://localhost:8080",
       "transform": {
         "request-template": "medlist.tmpl",
         "response-section": "MedicationEHRExtracts",
@@ -16,7 +16,7 @@
     {
       "name": "getMedicationSOAP",
       "path": "/getMedication0",
-      "service": "http://mock_cosmic_1:8080"
+      "service": "http://localhost:8080"
     }
   ]
 }
