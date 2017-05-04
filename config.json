@@ -9,7 +9,8 @@
       "service": "http://mock_cosmic_1:8080",
       "transform": {
         "request-template": "medlist.tmpl",
-        "response-section": "MedicationEHRExtracts"
+        "response-section": "MedicationEHRExtracts",
+	"response-schema": "schema/MedicationSchema.xsd"
       }
     },
     {

@@ -12,14 +12,16 @@ import (
 	"encoding/json"
 	"bytes"
 	"bufio"
-	xj "github.com/basgys/goxml2json"
+//	xj "github.com/basgys/goxml2json"
 )
 
 // Transform config.
 type Transform struct {
 	RequestTemplate string `json:"request-template"`
 	ResponseSection string `json:"response-section"`
+	ResponseSchema string `json:"response-schema"`
 	Template *template.Template
+	Schema map[string]xsdElement
 }
 
 // Reverse Proxy Handler (route controller)
@@ -28,14 +30,13 @@ type ProxyHandler struct {
 	Route Route
 }
 
+
 // Creates a new Proxy Handler
 func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
 	url, err := url.Parse(route.Service)
-
 	if err != nil {
-		log.Fatal("%v\n", err)
+		panic(err)
 	}
-
 	proxy := httputil.NewSingleHostReverseProxy(url)
 
 	if route.CertFile != "" {
@@ -49,10 +50,33 @@ func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
 		log.Printf("Transformer: %v -> %v\n", route.Name, route.Transform.RequestTemplate)
 		route.Transform.Template = template.Must(template.New(route.Name).ParseFiles(route.Transform.RequestTemplate))
 		route.Transform.Template.Option("missingkey=zero")
-		proxy.ModifyResponse = proxyHandler.transformResponse
+		proxy.ModifyResponse = proxyHandler.Route.Transform.transformResponse
+
+		schemas, err := ParseXSDFile(route.Transform.ResponseSchema)
+		if err != nil {
+			panic(err)
+		}
+		route.Transform.Schema = make(map[string]xsdElement)
+		for _, s := range schemas {
+			route.Transform.addElements(s.Elements)
+		}
 	}
 
 	return proxyHandler
+}
+
+func (e *xsdElement) isComplex() (bool) {
+	return e.ComplexType != nil
+}
+
+func (t *Transform) addElements(elements []xsdElement) {
+	for _, e := range elements {
+		log.Printf("element: %v, complex: %v, type: %v, max: %v\n", e.Name, e.isComplex(), e.Type, e.isList())
+		t.Schema[e.Name] = e
+		if e.isComplex() {
+			t.addElements(e.ComplexType.Sequence)
+		}
+	}
 }
 
 //
@@ -115,7 +139,10 @@ func (p *ProxyHandler) transformRequest(r *http.Request) error {
 }
 
 // Transforms responses from SOAP to JSON
-func (p *ProxyHandler) transformResponse(response *http.Response) error {
+func (t *Transform) transformResponse(response *http.Response) error {
+	log.Println("Transform response")
+
+	/*
 	jsonBody, err := xj.Convert(response.Body)
 	if err != nil {
 		return err
@@ -135,6 +162,23 @@ func (p *ProxyHandler) transformResponse(response *http.Response) error {
 		return err
 	}
 
+*/
+	decoder := NewDecoder(response.Body, t.Schema)
+	root := &Node{}
+	section, err := decoder.Decode(root, t.ResponseSection)
+	if err != nil {
+		return err
+	}
+
+	if section == nil {
+		panic("Unable to find section: " + t.ResponseSection)
+	}
+
+	body, err := section.encode()
+	if err != nil {
+		return err
+	}
+	log.Println("JSON Encoded")
 	response.ContentLength = int64(len(body))
 	response.Body = ioutil.NopCloser(bytes.NewReader(body))
 	response.Header.Set("Content-Type", "application/json; charset=utf-8")

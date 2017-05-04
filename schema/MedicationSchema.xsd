@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009  by Gunnar Ehn (Cambio) -->
+<!-- (Set the version under XSDVersion element & remove this if not needed) Version 0.13 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://se.cambiosys.cosmicconnect.publish.xml.medication" targetNamespace="http://se.cambiosys.cosmicconnect.publish.xml.medication" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="ISO_dt.xsd"/>
+	<xs:element name="MedicationEHRExtracts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="XSDVersion">
+					<xs:complexType>
+						<xs:attribute name="version" type="xs:decimal" use="optional" fixed="0.14"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="MedicationEHRExtract" maxOccurs="unbounded">
+					<!--Identiteter enligt 13606 och NPÖ -->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ehr_id" type="II"/>
+							<!--Unique identifier for the ehr extract. OID in root.
+							The identifier, "locally defined  COSMIC system id+patient id", in extension.-->
+							<!--Identities according to 13606 och NPÖ -->
+							<xs:element name="ehr_system" type="II"/>
+							<xs:element name="time_created" type="TS"/>
+							<xs:element name="Medication">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="rc_id" type="II"/>
+										<!--Unique identifier for the ehr extract. OID in root.
+							The identifier, "locally defined id+COSMIC-id", in extension.-->
+										<xs:element name="MedicationVersionDateTime" type="TS"/>
+										<xs:element name="MedicationPatientInstruction" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationCaregiverInstruction" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationPurpose" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationPurposeText" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationIndication" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationIndicationText" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationTarget" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationTargetText" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationType" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationAdministrationMethod" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationChainId" type="II" minOccurs="0"/>
+										<xs:element name="MedicationActive" type="xs:boolean"/>
+										<xs:element name="MedicationCancelComment" type="xs:string" minOccurs="0"/>
+										<xs:element name="MedicationStartDateTime" type="TS"/>
+										<xs:element name="MedicationEndDateTime" type="TS" minOccurs="0"/>
+										<xs:element name="MedicationDosages" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="MedicationDosage">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="WhenNeeded" type="xs:boolean"/>
+																<xs:element name="DosagePlugin" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:choice>
+																			<xs:element name="DripDosage" type="DripDosageType"/>
+																			<xs:element name="MultiDosage" type="MultiDosageType"/>
+																			<xs:element name="FreeTextDosage" type="FreeTextDosageType"/>
+																			<xs:element name="NormalDosage" type="NormalDosageType"/>
+																			<xs:element name="OccasionDosage" type="OccasionDosageType"/>
+																			<xs:element name="OnceDosage" type="OnceDosageType"/>
+																			<xs:element name="PeriodicDosage" type="PeriodicDosageType"/>
+																			<xs:element name="WeeklyDosage" type="WeeklyDosageType"/>
+																		</xs:choice>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Mixtures" type="MixturesType" minOccurs="0"/>
+										<xs:element name="MedicationChoice" type="CD"/>
+										<!--Map:  prescription = lmv (läkemedelsvara), Ordination =  lmp (Läkemedelsprodukt), prescription + extemore etb (Extemporeberedning). 
+											OID=1.2.752.129.2.2.3.1.2"
+											example: <"MedicationDrugType="lmp" codeSystem="1.2.752.129.2.2.3.1.2"/>-->
+										<xs:element name="MedicationDrugProduct" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="MedicationDrugProductTradeName" type="xs:string"/>
+													<xs:element name="MedicationDrugProductDrugFormTextSv" type="xs:string"/>
+													<xs:element name="MedicationDrugProductNplID" type="II" minOccurs="0"/>
+													<!--OID=1.2.752.129.2.1.5.1-->
+													<xs:element name="MedicationDrugProduct_AtcCode" type="CD"/>
+													<!-- ATC-code, OID, Substance.
+										example: <"MedicationDrugProduct_atcCode="MA01E" codeSystem="1.2.752.129.2.2.3.1.1" displayName="Propansyraderivat"/>-->
+													<xs:element name="MedicationDrugProductStrengthNumeric" type="xs:string"/>
+													<xs:element name="MedicationDrugProductStrengthNumericUnit" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="MedicationDrugExtemporeDescription" type="xs:string" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Patient">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PatientID" type="II"/>
+										<xs:element name="PatientProtectedId" type="xs:boolean"/>
+										<!--False=Unprotected True=Protected-->
+										<xs:element name="PatientSecrecyGroups">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Group" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="PatientName">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="PatientFamilyName" type="xs:string"/>
+													<xs:element name="PatientMiddleName" type="xs:string" minOccurs="0"/>
+													<xs:element name="PatientGivenName" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:attribute name="qualifier" type="xs:string" use="optional"/>
+															<xs:attribute name="value" type="xs:string"/>
+															<!-- Om förnamnet är tilltalsnamn sätts qualifier="CL". -->
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="HCMContact" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="target_id" type="II"/>
+										<!--Identifierare för aktuell Vård- och omsorgskontakt enligt 13606/NPÖ. OID för identifierare med orgnr+COSMIC-IDanges i root. 
+				Unik identifierare för aktuell vård- och omsorgskontakt anges i extension.-->
+										<xs:element name="HCMContactType" type="xs:string"/>
+										<xs:element name="HCMContactBegin" type="TS"/>
+										<xs:element name="HCMContactEnd" type="TS" minOccurs="0"/>
+										<xs:element name="HCMContactStatus" type="xs:string"/>
+										<!--"Mappningen NPÖ - Cosmic: EP = ej påbörjad - HCM_New, HCM_PlannedIN = inställd - HCM_Missed, HCM_CancelledPG =pågående 
+	      						HCM_Arrived, HCM_OpenAB = avbrutenAS =avslutad - HCM_Performed.
+									Ska NPÖstatus eller Cosmicstatus levereras till LIÖ-Portalen?)			-->
+										<xs:element name="ContactSecrecyLevels">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SecrecyLevel" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Units">
+								<!-- Ogranisation units related to Medication or prescription objects-->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Unit" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="UnitID" type="II"/>
+													<!--OID för HSA-ID. HSA-ID i extension-->
+													<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+													<!--OID för lokal enhetsbeteckning. Lokal enhetsbetckning i extension, t ex PEOE-eller KOMBIKA-koder-->
+													<xs:element name="UnitName" type="xs:string"/>
+													<xs:element name="UnitSecrecyGroups">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Group" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="HeadCareproviderUnitID" type="II" minOccurs="0"/>
+													<!-- For future implementation of "Vårdgivare" according to the swedish data law. OID for the HSA-ID. HSA-ID in extension-->
+													<xs:element name="AccessZones">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="AccessZoneID" type="II" minOccurs="0" maxOccurs="unbounded"/>
+																<!-- For future implementation of "Vårdenhet" according to the swedish data law. OID for the HSA-ID. HSA-ID in extension-->
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="PhoneNumbers">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Phone" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="PhoneType" type="xs:string"/>
+																			<xs:element name="PhoneNumber" type="xs:string"/>
+																			<xs:element name="PhoneComment" type="xs:string"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="EmailAddresses">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Email" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="EmailType" type="xs:string"/>
+																			<xs:element name="EmailAddress" type="xs:string"/>
+																			<xs:element name="EmailComment" type="xs:string" minOccurs="0"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="UnitAddresses">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="UnitAddress" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="UnitAddressType" type="xs:string"/>
+																			<xs:element name="UnitAddressAddress" type="xs:string"/>
+																			<xs:element name="UnitAddressPostcode" type="xs:string"/>
+																			<xs:element name="UnitAddressCity" type="xs:string"/>
+																			<xs:element name="UnitAddressCounty" type="xs:string" minOccurs="0"/>
+																			<xs:element name="UnitAddressCountry" type="xs:string" minOccurs="0"/>
+																			<xs:element name="UnitAddressGeographicalPlace" type="xs:string" minOccurs="0"/>
+																			<xs:element name="UnitAddressComment" type="xs:string" minOccurs="0"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CreationUnit">
+								<!--Creation unit unit conncted to the Medication object -->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="UnitID" type="II"/>
+										<!--HSA-ID for Unit =1.2.752.129.2.1.4.1, OID för HSA-ID:n. Refererar till Unit ovan.-->
+										<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+										<!--OID för lokal enhetsbeteckning. Lokal enhetsbetckning i extension, t ex PEOE-eller KOMBIKA-koder-->
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ResponsibleUnit">
+								<!--Responsible unit unit conncted to the Medication object -->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="UnitID" type="II"/>
+										<!--HSA-ID for Unit =1.2.752.129.2.1.4.1, OID för HSA-ID:n. Refererar till Unit ovan.-->
+										<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+										<!--OID för lokal enhetsbeteckning. Lokal enhetsbetckning i extension, t ex PEOE-eller KOMBIKA-koder-->
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AccessZoneUnit" minOccurs="0">
+								<!--
+										In order to comply with the swedish patient data law all ehr extracts should be marked with "Vårdenhet" = AccessZoneUnit  
+								-->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="UnitID" type="II"/>
+										<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="HeadCareproviderUnit" minOccurs="0">
+								<!--
+									In order to comply with the swedish patient data law all ehr extracts should be marked with "Vårdgivare" = HeadCareproviderUnit  
+								-->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="UnitID" type="II"/>
+										<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CareProviders">
+								<!-- The Care Providers connected to the medication object-->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CareProvider" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="CareProviderType" type="xs:string"/>
+													<!--The Care Provider connected to the "ordination" should get the CareProviderType="Signerad av"
+																The Care Provider connected to the "prescription" should get the CareProviderType="Vårdgivare"-->
+													<xs:element name="CareProviderID" type="II"/>
+													<!--OID för HSA-ID=1.2.752.129.2.1.4.1. HSA-ID i extension-->
+													<xs:element name="CareProviderName" type="xs:string"/>
+													<xs:element name="ProviderPosition" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="CareProviderPositionID" type="II"/>
+																<!--Position OID according to HSA=1.2.752.129.2.2.1.4. ID in extension-->
+																<xs:element name="CareProviderPositionName" type="xs:string"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="CareProviderUnit">
+														<!--Organisatorisk tillhörighet för vårdgivaren-->
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="UnitID" type="II"/>
+																<!--HSA-ID för enhet, OID för HSA-ID:n. Refererar till Unit ovan.-->
+																<xs:element name="UnitLocalID" type="II" minOccurs="0"/>
+																<!--OID för lokal enhetsbeteckning. Lokal enhetsbetckning i extension, t ex PEOE-eller KOMBIKA-koder-->
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- Medication Dosage types -->
+	<xs:complexType name="DripDosageType">
+		<xs:sequence>
+			<xs:element name="Amount" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:double">
+							<xs:attribute name="Unit" type="xs:string" use="required"/>
+						</xs:extension>
+						<!-- for example "mg" -->
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Volume" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:double">
+							<xs:attribute name="Unit" type="xs:string" use="required"/>
+						</xs:extension>
+						<!-- for example, "ml" -->
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Concentration" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:double">
+							<xs:attribute name="Unit" type="xs:string" use="required"/>
+						</xs:extension>
+						<!-- for example, "mg/ml" -->
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Duration" minOccurs="0">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:integer">
+							<xs:attribute name="TimeUnit" type="DoseTimeUnitType" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Iteration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="DailyReoccurence">
+								<!-- inpatient unit times are to be used -->
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Amount" type="xs:integer"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SpecifiedTimes">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Time" type="xs:time" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="TimesADay">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="StartTime" type="xs:time" minOccurs="0"/>
+										<!-- can be missing if "when needed" is set -->
+										<xs:element name="Amount" type="xs:integer"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Continuous"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Speeds" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Speed" type="xs:double" minOccurs="0"/>
+						<xs:element name="MinSpeed" type="xs:double" minOccurs="0"/>
+						<xs:element name="MaxSpeed" type="xs:double" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="AmountUnit" type="xs:string" use="required"/>
+					<xs:attribute name="TimeUnit" type="DoseTimeUnitType" use="required"/>
+					<!-- for example, "ml" -->
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MultiDosageType">
+		<xs:sequence>
+			<xs:element name="Dosage" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="StartTime">	<!-- deprecated but used for backward compatibility -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:integer">
+										<xs:attribute name="Type" type="DoseTimeUnitType" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+							<xs:element name="StartDateTime" type="xs:dateTime"/>
+						</xs:choice>
+						<xs:choice>
+							<xs:element name="DurationTime">	<!-- deprecated but used for backward compatibility -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:integer">
+										<xs:attribute name="Type" type="DoseDurationTimeUnitType" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+							<xs:element name="DurationDateTime" type="DateTimeDuration" nillable="true"/>
+						</xs:choice>
+						<xs:element name="DosePlugin">
+							<xs:complexType>
+								<xs:choice>
+									<xs:element name="FreeTextDosage" type="FreeTextDosageType"/>
+									<xs:element name="NormalDosage" type="NormalDosageType"/>
+									<xs:element name="OccasionDosage" type="OccasionDosageType"/>
+									<xs:element name="OnceDosage" type="OnceDosageType"/>
+									<xs:element name="PeriodicDosage" type="PeriodicDosageType"/>
+									<xs:element name="WeeklyDosage" type="WeeklyDosageType"/>
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FreeTextDosageType">
+		<xs:sequence>
+			<xs:element name="Text" type="xs:string"/>
+			<xs:element name="Unit" type="xs:string" minOccurs="0"/>
+			<xs:element name="Motivation" type="xs:string" minOccurs="0"/>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NormalDosageType">
+		<xs:sequence>
+			<xs:element name="MinDose" type="xs:double"/>
+			<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+			<xs:element name="Unit" type="xs:string"/>
+			<!-- for example, "tabletter" -->
+			<xs:element name="Time">
+				<xs:complexType>
+					<xs:all minOccurs="0">
+						<xs:element name="TimesPerDay" type="xs:integer"/>
+						<xs:element name="Times">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Time" type="DoseTimeOfDayType" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="WhenNeeded" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MaxDose" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:double">
+										<xs:attribute name="DoseRestriction" type="DoseRestrictionType" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="MinimumIntervalBetweenDosages" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:double">
+										<xs:attribute name="Type" type="DoseTimeUnitType" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OccasionDosageType">
+		<xs:sequence>
+			<xs:element name="Unit" type="xs:string"/>
+			<!-- for example, "tabletter" -->
+			<xs:element name="Dosages">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="OccasionPerDayDosages">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="OccasionPerDayDose" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="MinDose" type="xs:double"/>
+												<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+											</xs:sequence>
+											<xs:attribute name="DoseOrder" type="xs:unsignedInt" use="required"/>
+											<!-- specifies in which order the dosages should be taken -->
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="TimeOfDayDosages">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="TimeOfDayDose" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="MinDose" type="xs:double"/>
+												<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+											</xs:sequence>
+											<xs:attribute name="Time" type="DoseTimeOfDayType" use="required"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="SpecifiedTimeDosages">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="SpecifiedTimeDose" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="MinDose" type="xs:double"/>
+												<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+											</xs:sequence>
+											<xs:attribute name="Time" type="xs:time" use="required"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OnceDosageType">
+		<xs:sequence>
+			<xs:element name="MinDose" type="xs:double"/>
+			<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+			<xs:element name="Unit" type="xs:string"/>
+			<!-- for example, "tabletter" -->
+			<xs:element name="DateTime" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PeriodicDosageType">
+		<xs:sequence>
+			<xs:element name="MinDose" type="xs:double"/>
+			<xs:element name="MaxDose" type="xs:double" minOccurs="0"/>
+			<xs:element name="Unit" type="xs:string"/>
+			<!-- for example, "tabletter" -->
+			<xs:element name="IntervalTime">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:long">
+							<xs:attribute name="Type" type="DoseTimeUnitType" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WeeklyDosageType">
+		<xs:sequence>
+			<xs:element name="Unit" type="xs:string"/>
+			<!-- for example, "tabletter" -->
+			<xs:element name="Weeks">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Week" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="Doses" minOccurs="0" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Dose" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="Dose" type="xs:double"/>
+															<xs:element name="DayOfWeek" type="DoseWeekDayType"/>
+															<xs:element name="TimeOfDay" type="DoseTimeOfDayType"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DosageText" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Medication dosage data types -->
+	<!-- SimpleType specifying different times of a day. -->
+	<xs:simpleType name="DoseTimeOfDayType">
+		<xs:annotation>
+			<xs:documentation>Specifies different times of a day.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Morning"/>
+			<xs:enumeration value="Lunch"/>
+			<xs:enumeration value="Noon"/>
+			<xs:enumeration value="Evening"/>
+			<xs:enumeration value="Night"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- SimpleType specifying the week days for a dose. -->
+	<xs:simpleType name="DoseWeekDayType">
+		<xs:annotation>
+			<xs:documentation>Specifies the week days for a dose.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Monday"/>
+			<xs:enumeration value="Tuesday"/>
+			<xs:enumeration value="Wednesday"/>
+			<xs:enumeration value="Thursday"/>
+			<xs:enumeration value="Friday"/>
+			<xs:enumeration value="Saturday"/>
+			<xs:enumeration value="Sunday"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- SimpleType specifying the interval restriction of a dose. -->
+	<xs:simpleType name="DoseRestrictionType">
+		<xs:annotation>
+			<xs:documentation>Specifies the interval restriction of a dose.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PerDay"/>
+			<xs:enumeration value="PerDosage"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- SimpleType specifying the unit of a time value. -->
+	<xs:simpleType name="DoseTimeUnitType">
+		<xs:annotation>
+			<xs:documentation>Specifies the unit of a time value.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Minutes"/>
+			<xs:enumeration value="Hours"/>
+			<xs:enumeration value="Days"/>
+			<xs:enumeration value="Weeks"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- SimpleType specifying the unit of a duration time value. This type is in union with DoseTimeUnitType. -->
+	<xs:simpleType name="DoseDurationTimeUnitType">
+		<xs:annotation>
+			<xs:documentation>Specifies the unit of a duration time value.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Minutes"/>
+			<xs:enumeration value="Hours"/>
+			<xs:enumeration value="Days"/>
+			<xs:enumeration value="Weeks"/>
+			<xs:enumeration value="Unlimited"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ComplexType specifying an absolute (instead of relative) datetime duration with possible unlimited flag. Set element to nil when Unlimited="true". -->
+	<xs:complexType name="DateTimeDuration">
+		<xs:annotation>
+			<xs:documentation>Specifies an absolute (instead of relative) datetime duration with possible unlimited flag. Set element to nil when Unlimited="true".</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:dateTime">
+				<xs:attribute name="Unlimited" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- Complex type specifying the set of mixtures -->
+	<xs:complexType name="MixturesType">
+        <xs:sequence>
+            <xs:element name="Mixture" type="MixtureType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+	<!-- Complex type specifying Additives/Dilutions related data -->
+	<xs:complexType name="MixtureType">
+        <xs:sequence>
+            <xs:element name="Type" type="xs:string"/>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Strength" type="xs:string" minOccurs="0"/>
+            <xs:element name="Amount" type="xs:string" minOccurs="0"/>
+            <xs:element name="Text" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
