@@ -47,7 +47,7 @@ func args() Options {
 	const (
 		defaultServerAddress = ":80"
 		serverAddressUsage   = "server address: ':80', '0.0.0.0:8080'..."
-		defaultRouteConfig   = "/Users/Peter/go/src/github.com/advptr/reverse-proxy/config.json"
+		defaultRouteConfig   = "config.json"
 		routeConfigUsage     = "configuration file: 'config.json'"
 	)
 	address := flag.String("address", defaultServerAddress, serverAddressUsage)
