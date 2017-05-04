@@ -6,6 +6,7 @@ import (
 	"strings"
 	"encoding/json"
 	"log"
+	"strconv"
 )
 
 // A Decoder reads and decodes XML objects from an input stream.
@@ -18,6 +19,7 @@ type Decoder struct {
 type Node struct {
 	Children map[string]Nodes
 	Data     string
+	DataType string
 	Complex  bool
 	List     bool
 }
@@ -67,7 +69,7 @@ func (dec *Decoder) Decode(root *Node, label string) (*Node, error) {
 			schema := dec.schema[se.Name.Local]
 			element = &Element{
 				parent: element,
-				node:   &Node{Complex:schema.isComplex(), List:schema.isList()},
+				node:   &Node{DataType: schema.Type, Complex:schema.isComplex(), List:schema.isList()},
 				label:  se.Name.Local,
 			}
 		case xml.CharData:
@@ -116,6 +118,26 @@ func (n *Node) serialize() (interface{}) {
 		}
 		return object
 	} else {
-		return n.Data
+		return n.value()
 	}
+}
+
+// converts to datatype
+func (n *Node) value() (interface{}) {
+	var val interface{}
+	var err error
+	switch n.DataType {
+	case "xs:boolean":
+		val, err = strconv.ParseBool(n.Data)
+	case "xs:integer":
+		val, err = strconv.ParseInt(n.Data, 10, 64)
+	case "xs:decimal":
+		val, err = strconv.ParseFloat(n.Data, 64)
+	default:
+		val, err = n.Data, nil
+	}
+	if err != nil {
+		return nil
+	}
+	return val
 }
