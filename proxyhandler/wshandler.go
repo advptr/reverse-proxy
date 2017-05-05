@@ -157,28 +157,6 @@ func (t *Transform) transformResponse(response *http.Response) error {
 	return nil
 }
 
-//
-func findSection(name string, f interface{}) interface{} {
-	m := f.(map[string]interface{})
-
-	for k, v := range m {
-		if k == name {
-			return m[name]
-		}
-		if _, ok := m[k]; ok {
-			switch v.(type) {
-			case string, int, int64, float64, float32, bool, []interface{}:
-			default:
-				value := findSection(name, m[k])
-				if value != nil {
-					return value
-				}
-			}
-		}
-	}
-	return nil
-}
-
 // Transport security to backend services
 func transport(route Route, pool *x509.CertPool) *http.Transport {
 	cert := route.loadClientCert()
