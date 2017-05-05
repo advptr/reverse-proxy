@@ -1,27 +1,26 @@
 package proxyhandler
 
 import (
-	"crypto/x509"
-	"net/url"
-	"log"
-	"net/http/httputil"
-	"html/template"
-	"net/http"
-	"crypto/tls"
-	"io/ioutil"
-	"encoding/json"
-	"bytes"
 	"bufio"
-//	xj "github.com/basgys/goxml2json"
+	"bytes"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/json"
+	"html/template"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
 )
 
 // Transform config.
 type Transform struct {
 	RequestTemplate string `json:"request-template"`
 	ResponseSection string `json:"response-section"`
-	ResponseSchema string `json:"response-schema"`
-	Template *template.Template
-	Schema map[string]xsdElement
+	ResponseSchema  string `json:"response-schema"`
+	Template        *template.Template
+	Schema          map[string]xsdElement
 }
 
 // Reverse Proxy Handler (route controller)
@@ -29,7 +28,6 @@ type ProxyHandler struct {
 	Proxy *httputil.ReverseProxy
 	Route Route
 }
-
 
 // Creates a new Proxy Handler
 func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
@@ -48,7 +46,8 @@ func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
 
 	if route.Transform != nil {
 		log.Printf("Transformer: %v -> %v\n", route.Name, route.Transform.RequestTemplate)
-		route.Transform.Template = template.Must(template.New(route.Name).ParseFiles(route.Transform.RequestTemplate))
+		tmpl, err := ioutil.ReadFile(route.Transform.RequestTemplate)
+		route.Transform.Template = template.Must(template.New(route.Name).Parse(string(tmpl)))
 		route.Transform.Template.Option("missingkey=zero")
 		proxy.ModifyResponse = proxyHandler.Route.Transform.transformResponse
 
@@ -65,7 +64,7 @@ func NewWSHandler(route Route, certPool *x509.CertPool) Handler {
 	return proxyHandler
 }
 
-func (e *xsdElement) isComplex() (bool) {
+func (e *xsdElement) isComplex() bool {
 	return e.ComplexType != nil
 }
 
@@ -80,7 +79,7 @@ func (t *Transform) addElements(elements []xsdElement) {
 }
 
 //
-func (p *ProxyHandler) Path() (string) {
+func (p *ProxyHandler) Path() string {
 	return p.Route.Path
 }
 
@@ -107,7 +106,6 @@ func (p *ProxyHandler) transformRequest(r *http.Request) error {
 	}
 	log.Printf("Before Transform: %v\n", string(sourceBytes))
 
-
 	var f interface{}
 	err = json.Unmarshal(sourceBytes, &f)
 	if err != nil {
@@ -117,7 +115,7 @@ func (p *ProxyHandler) transformRequest(r *http.Request) error {
 	var destBuffer bytes.Buffer
 	wr := bufio.NewWriter(&destBuffer)
 
-	err = p.Route.Transform.Template.ExecuteTemplate(wr, p.Route.Transform.RequestTemplate, f)
+	err = p.Route.Transform.Template.ExecuteTemplate(wr, p.Route.Name, f)
 	if err != nil {
 		return err
 	}
@@ -143,27 +141,27 @@ func (t *Transform) transformResponse(response *http.Response) error {
 	log.Println("Transform response")
 
 	/*
-	jsonBody, err := xj.Convert(response.Body)
-	if err != nil {
-		return err
-	}
+		jsonBody, err := xj.Convert(response.Body)
+		if err != nil {
+			return err
+		}
 
-	var f interface{}
-	err = json.Unmarshal(jsonBody.Bytes(), &f)
-	if err != nil {
-		return err
-	}
+		var f interface{}
+		err = json.Unmarshal(jsonBody.Bytes(), &f)
+		if err != nil {
+			return err
+		}
 
-	section := findSection(p.Route.Transform.ResponseSection, f)
+		section := findSection(p.Route.Transform.ResponseSection, f)
 
-	var body []byte
-	body, err = json.Marshal(section)
-	if err != nil {
-		return err
-	}
+		var body []byte
+		body, err = json.Marshal(section)
+		if err != nil {
+			return err
+		}
 
-*/
-	decoder := NewDecoder(response.Body, t.Schema)
+	*/
+	decoder := NewParser(response.Body, t.Schema)
 	root := &Node{}
 	section, err := decoder.Decode(root, t.ResponseSection)
 	if err != nil {
@@ -240,5 +238,3 @@ func director(serviceUrl string) func(req *http.Request) {
 
 	return director
 }
-
-

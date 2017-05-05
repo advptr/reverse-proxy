@@ -2,26 +2,24 @@ package proxyhandler
 
 import (
 	"crypto/tls"
-	"io/ioutil"
 	"encoding/pem"
 	pxf "golang.org/x/crypto/pkcs12"
+	"io/ioutil"
 	"strings"
 )
 
-
 // Route config.
 type Route struct {
-	Name      string `json:"name"`
-	Path      string `json:"path"`
-	Service   string `json:"service"`
-	CertFile  string `json:"cert-file"`
-	Key       string `json:"key"`
+	Name      string     `json:"name"`
+	Path      string     `json:"path"`
+	Service   string     `json:"service"`
+	CertFile  string     `json:"cert-file"`
+	Key       string     `json:"key"`
 	Transform *Transform `json:"transform"`
 }
 
-
 //
-func (r *Route) loadClientCert() (tls.Certificate) {
+func (r *Route) loadClientCert() tls.Certificate {
 	if strings.HasSuffix(strings.ToLower(r.CertFile), ".pem") {
 		return r.loadPemCert()
 	} else {
@@ -30,7 +28,7 @@ func (r *Route) loadClientCert() (tls.Certificate) {
 }
 
 //
-func (r *Route) loadPemCert() (tls.Certificate) {
+func (r *Route) loadPemCert() tls.Certificate {
 	cert, err := tls.LoadX509KeyPair(r.CertFile, r.Key)
 
 	if err != nil {
@@ -41,7 +39,7 @@ func (r *Route) loadPemCert() (tls.Certificate) {
 }
 
 //
-func (r *Route) loadPxfCert() (tls.Certificate) {
+func (r *Route) loadPxfCert() tls.Certificate {
 	var err error
 	var data []byte
 	data, err = ioutil.ReadFile(r.CertFile)
@@ -67,4 +65,3 @@ func (r *Route) loadPxfCert() (tls.Certificate) {
 
 	return cert
 }
-
