@@ -139,37 +139,10 @@ func (p *ProxyHandler) transformRequest(r *http.Request) error {
 // Transforms responses from SOAP to JSON
 func (t *Transform) transformResponse(response *http.Response) error {
 	log.Println("Transform response")
-
-	/*
-		jsonBody, err := xj.Convert(response.Body)
-		if err != nil {
-			return err
-		}
-
-		var f interface{}
-		err = json.Unmarshal(jsonBody.Bytes(), &f)
-		if err != nil {
-			return err
-		}
-
-		section := findSection(p.Route.Transform.ResponseSection, f)
-
-		var body []byte
-		body, err = json.Marshal(section)
-		if err != nil {
-			return err
-		}
-
-	*/
-	decoder := NewParser(response.Body, t.Schema)
-	root := &Node{}
-	section, err := decoder.Decode(root, t.ResponseSection)
+	parser := NewParser(response.Body, t.Schema)
+	section, err := parser.Parse(&Node{}, t.ResponseSection)
 	if err != nil {
 		return err
-	}
-
-	if section == nil {
-		panic("Unable to find section: " + t.ResponseSection)
 	}
 
 	body, err := section.encode()

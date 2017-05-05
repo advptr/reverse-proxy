@@ -5,9 +5,10 @@ import (
 	"io"
 	"log"
 	"strings"
+	"fmt"
 )
 
-// A Parser reads and decodes XML objects from an input stream.
+// A Parser reads XML objects from an input stream.
 type Parser struct {
 	reader io.Reader
 	schema map[string]xsdElement
@@ -24,15 +25,15 @@ func NewParser(r io.Reader, schema map[string]xsdElement) *Parser {
 	return &Parser{reader: r, schema: schema}
 }
 
-// Decodes XML
-// label indicates the element to return, otherwise the root element is returned
-func (dec *Parser) Decode(root *Node, label string) (*Node, error) {
+// Parses XML
+// label indicates the element to return, otherwise and error is returned
+func (p *Parser) Parse(root *Node, label string) (*Node, error) {
 
-	xmlDec := xml.NewDecoder(dec.reader)
+	xmlDec := xml.NewDecoder(p.reader)
 
 	element := &Element{parent: nil, node: root}
 
-	var section *Node = root
+	var section *Node = nil
 
 	for {
 		t, err := xmlDec.Token()
@@ -43,7 +44,7 @@ func (dec *Parser) Decode(root *Node, label string) (*Node, error) {
 		}
 		switch se := t.(type) {
 		case xml.StartElement:
-			schema := dec.schema[se.Name.Local]
+			schema := p.schema[se.Name.Local]
 			element = &Element{
 				parent: element,
 				node:   &Node{DataType: schema.Type, Complex: schema.isComplex(), List: schema.isList()},
@@ -60,6 +61,9 @@ func (dec *Parser) Decode(root *Node, label string) (*Node, error) {
 			}
 			element = element.parent
 		}
+	}
+	if section == nil {
+		return nil, fmt.Errorf("Unable to find section/element with name: %v", label)
 	}
 
 	log.Printf("Return element %v\n", root)

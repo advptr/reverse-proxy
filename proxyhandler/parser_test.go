@@ -140,7 +140,7 @@ xsi:schemaLocation="http://se.cambiosys.cosmicconnect.publish.xml.medication fil
 	decoder := NewParser(strings.NewReader(s), schemaElements)
 
 	root := &Node{}
-	section, err := decoder.Decode(root, "MedicationEHRExtracts")
+	section, err := decoder.Parse(root, "MedicationEHRExtracts")
 	assert.NoError(err)
 
 	json, err := section.encode()
