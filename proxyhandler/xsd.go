@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"log"
 )
 
 func ParseXSDFile(fname string) ([]xsdSchema, error) {
@@ -13,6 +14,7 @@ func ParseXSDFile(fname string) ([]xsdSchema, error) {
 }
 
 func parseFile(fname string, parsedFiles map[string]struct{}) ([]xsdSchema, error) {
+	log.Printf("Parse file: %v\n", fname)
 	f, err := os.Open(fname)
 	if err != nil {
 		return nil, err
@@ -33,7 +35,12 @@ func parse(r io.Reader, fname string, parsedFiles map[string]struct{}) ([]xsdSch
 	schemas := []xsdSchema{schema}
 	dir, file := filepath.Split(fname)
 	parsedFiles[file] = struct{}{}
-	for _, imp := range schema.Imports {
+
+	refs := schema.Imports
+	for _, inc := range schema.Includes {
+		refs = append(refs, inc)
+	}
+	for _, imp := range refs {
 		if _, ok := parsedFiles[imp.Location]; ok {
 			continue
 		}
@@ -51,6 +58,7 @@ type xsdSchema struct {
 	XMLName      xml.Name
 	Ns           string           `xml:"xmlns,attr"`
 	Imports      []xsdImport      `xml:"import"`
+	Includes     []xsdImport      `xml:"include"`
 	Elements     []xsdElement     `xml:"element"`
 	ComplexTypes []xsdComplexType `xml:"complexType"`
 	SimpleTypes  []xsdSimpleType  `xml:"simpleType"`

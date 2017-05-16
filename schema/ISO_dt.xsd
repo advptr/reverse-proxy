@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Path för "TS" ändrad av Gunnar Ehn 20090604-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sch="http://www.ascc.net/xml/schematron" elementFormDefault="qualified">
+	<xsd:annotation>
+		<xsd:documentation>
+				From draft ISO 21090 May 2008.
+		</xsd:documentation>
+	</xsd:annotation>
+	<xsd:simpleType name="NullFlavor">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="NI"/>
+			<xsd:enumeration value="INV"/>
+			<xsd:enumeration value="OTH"/>
+			<xsd:enumeration value="NINF"/>
+			<xsd:enumeration value="PINF"/>
+			<xsd:enumeration value="UNC"/>
+			<xsd:enumeration value="DER"/>
+			<xsd:enumeration value="UNK"/>
+			<xsd:enumeration value="ASKU"/>
+			<xsd:enumeration value="NAV"/>
+			<xsd:enumeration value="QS"/>
+			<xsd:enumeration value="NASK"/>
+			<xsd:enumeration value="TRC"/>
+			<xsd:enumeration value="MSK"/>
+			<xsd:enumeration value="NA"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="UpdateMode">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="A"/>
+			<xsd:enumeration value="AU"/>
+			<xsd:enumeration value="U"/>
+			<xsd:enumeration value="R"/>
+			<xsd:enumeration value="I"/>
+			<xsd:enumeration value="D"/>
+			<xsd:enumeration value="K"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="Compression">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="DF"/>
+			<xsd:enumeration value="GZ"/>
+			<xsd:enumeration value="ZL"/>
+			<xsd:enumeration value="Z"/>
+			<xsd:enumeration value="BZ"/>
+			<xsd:enumeration value="Z7"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IntegrityCheckAlgorithm">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SHA1"/>
+			<xsd:enumeration value="SHA256"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="TelecommunicationAddressUse">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="H"/>
+			<xsd:enumeration value="HP"/>
+			<xsd:enumeration value="HV"/>
+			<xsd:enumeration value="WP"/>
+			<xsd:enumeration value="DIR"/>
+			<xsd:enumeration value="PUB"/>
+			<xsd:enumeration value="BAD"/>
+			<xsd:enumeration value="TMP"/>
+			<xsd:enumeration value="AS"/>
+			<xsd:enumeration value="EC"/>
+			<xsd:enumeration value="MC"/>
+			<xsd:enumeration value="PG"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="set_TelecommunicationAddressUse">
+		<xsd:list itemType="TelecommunicationAddressUse"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="IdentifierScope">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="BUSN"/>
+			<xsd:enumeration value="OBJ"/>
+			<xsd:enumeration value="VER"/>
+			<xsd:enumeration value="VW"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="IdentifierReliability">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ISS"/>
+			<xsd:enumeration value="VER"/>
+			<xsd:enumeration value="UNV"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CodingRationale">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="O"/>
+			<xsd:enumeration value="P"/>
+			<xsd:enumeration value="R"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="set_CodingRationale">
+		<xsd:list itemType="CodingRationale"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="UncertaintyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="U"/>
+			<xsd:enumeration value="N"/>
+			<xsd:enumeration value="LN"/>
+			<xsd:enumeration value="G"/>
+			<xsd:enumeration value="E"/>
+			<xsd:enumeration value="X2"/>
+			<xsd:enumeration value="T"/>
+			<xsd:enumeration value="F"/>
+			<xsd:enumeration value="B"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="XmlID">
+		<xsd:restriction base="xsd:ID"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="Code">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="set_Code">
+		<xsd:list itemType="Code"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="XmlIDREF">
+		<xsd:restriction base="xsd:IDREF"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="Uid">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="ANY">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="no ANY unless null">
+					<sch:rule abstract="true" id="ANY-0">
+						<sch:assert test="todo"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="HXIT">
+				<xsd:attribute name="nullFlavor" type="NullFlavor" use="optional"/>
+				<xsd:attribute name="flavorId" type="xsd:string" use="optional"/>
+				<xsd:attribute name="updateMode" type="UpdateMode" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="HXIT" abstract="true">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="extension requires root">
+					<sch:rule abstract="true" id="HXIT-0">
+						<sch:assert test="not(@controlActExtension) or @controlActRoot"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:attribute name="validTimeLow" type="xsd:string" use="optional"/>
+		<xsd:attribute name="validTimeHigh" type="xsd:string" use="optional"/>
+		<xsd:attribute name="controlActRoot" type="Uid" use="optional"/>
+		<xsd:attribute name="controlActExtension" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ED">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="content is required if not null">
+					<sch:rule abstract="true" id="ED-0">
+						<sch:assert test="@nullFlavor or @value or xml or data"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="only one of value, data, xml">
+					<sch:rule abstract="true" id="ED-1">
+						<sch:assert test="count(*[self::value or self::xml or self::data])&#60;=1"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="integrityCheckAlgorithm required">
+					<sch:rule abstract="true" id="ED-2">
+						<sch:assert test="not(integrityCheck) or @integrityCheckAlgorithm"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="thumbnails do not use reference">
+					<sch:rule abstract="true" id="ED-3">
+						<sch:assert test="not(thumbnail) or thumbnail[not(@nullFlavor and reference)]"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="thumbnails do not have thumbnails">
+					<sch:rule abstract="true" id="ED-4">
+						<sch:assert test="not(thumbnail) or thumbnail[not(thumbnail)]"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="compression only on binary">
+					<sch:rule abstract="true" id="ED-5">
+						<sch:assert test="(@compression and data) or not(@compression or data)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="mediaType cannot be null">
+					<sch:rule abstract="true" id="ED-6">
+						<sch:assert test="@mediaType"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="value implies mediaType is text/plain">
+					<sch:rule abstract="true" id="ED-7">
+						<sch:assert test="not(@value) or (@value and (not(@mediaType) or @mediaType=&#39;text/plain&#39;))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no charset for value or xml">
+					<sch:rule abstract="true" id="ED-8">
+						<sch:assert test="not(@value or xml) or not(@charset)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="No History or Update Mode">
+					<sch:rule abstract="true" id="ED-9">
+						<sch:assert test="count(*[self::reference or self::thumbnail][@validTimeLow or @validTimeHigh or @controlActRoot or @controlActExtension or @updateMode])=0"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no nested translations">
+					<sch:rule abstract="true" id="ED-10">
+						<sch:assert test="not(translation) or thumbnail[not(translation)]"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no value if null">
+					<sch:rule abstract="true" id="ED-11">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@value))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no data if null">
+					<sch:rule abstract="true" id="ED-12">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@data))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no xml if null">
+					<sch:rule abstract="true" id="ED-13">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@xml))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no reference if null">
+					<sch:rule abstract="true" id="ED-14">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@reference))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no mediaType if null">
+					<sch:rule abstract="true" id="ED-15">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@mediaType))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no charset if null">
+					<sch:rule abstract="true" id="ED-16">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@charset))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no language if null">
+					<sch:rule abstract="true" id="ED-17">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@language))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no compression if null">
+					<sch:rule abstract="true" id="ED-18">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@compression))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no integrityCheck if null">
+					<sch:rule abstract="true" id="ED-19">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@integrityCheck))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no integrityCheckAlgorithm if null">
+					<sch:rule abstract="true" id="ED-20">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@integrityCheckAlgorithm))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no thumbnail if null">
+					<sch:rule abstract="true" id="ED-21">
+						<sch:assert test="not(@nullFlavor) or (not(thumbnail) or thumbnail\@nullFlavor)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no translation if null">
+					<sch:rule abstract="true" id="ED-22">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@translation))"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="data" type="xsd:base64Binary" minOccurs="0"/>
+					<xsd:element name="xml" type="xsd:anyType" minOccurs="0"/>
+					<xsd:element name="reference" type="TEL.URL" minOccurs="0"/>
+					<xsd:element name="integrityCheck" type="xsd:base64Binary" minOccurs="0"/>
+					<xsd:element name="thumbnail" type="ED" minOccurs="0"/>
+					<xsd:element name="description" type="ST" minOccurs="0"/>
+					<xsd:element name="translation" type="ED" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:attribute name="value" type="xsd:string" use="optional"/>
+				<xsd:attribute name="mediaType" type="xsd:string" use="optional" default="text/plain"/>
+				<xsd:attribute name="charset" type="Code" use="optional"/>
+				<xsd:attribute name="language" type="Code" use="optional"/>
+				<xsd:attribute name="compression" type="Compression" use="optional"/>
+				<xsd:attribute name="integrityCheckAlgorithm" type="IntegrityCheckAlgorithm" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TEL.URL">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="no use">
+					<sch:rule abstract="true" id="TEL.URL-0">
+						<sch:assert test="not(use)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="schemes">
+					<sch:rule abstract="true" id="TEL.URL-1">
+						<sch:assert test="(starts-with(@value, &#34;file&#34;) or starts-with(@value,
+&#34;ftp&#34;) or starts-with(@value, &#34;http&#34;) or starts-with(@value, &#34;https&#34;)
+or starts-with(@value, &#34;nfs&#34;))"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="TEL">
+				<xsd:sequence>
+					<xsd:element name="useablePeriod" type="QSET_TS" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="use" type="TelecommunicationAddressUse" use="prohibited"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TEL">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="value is required">
+					<sch:rule abstract="true" id="TEL-0">
+						<sch:assert test="@nullFlavor or (not(@nullFlavor) and @value)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no value if null">
+					<sch:rule abstract="true" id="TEL-1">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@value))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no use if null">
+					<sch:rule abstract="true" id="TEL-2">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@use))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no useablePeriod if null">
+					<sch:rule abstract="true" id="TEL-3">
+						<sch:assert test="not(@nullFlavor) or (not(thumbnail) or
+useablePeriod\@nullFlavor)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no updateMode or History on TEL attributes">
+					<sch:rule abstract="true" id="TEL-4">
+						<sch:assert test="count(*[self::useablePeriod][@validTimeLow or @validTimeHigh or
+@controlActRoot or @controlActExtension or @updateMode])=0"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="useablePeriod" type="QSET_TS" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="value" type="xsd:anyURI" use="optional"/>
+				<xsd:attribute name="use" type="set_TelecommunicationAddressUse" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="QSET_TS" abstract="true">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="No History or Update Mode">
+					<sch:rule abstract="true" id="QSET_TS-0">
+						<sch:assert test="count(*[self::originalText][@validTimeLow or @validTimeHigh or
+@controlActRoot or @controlActExtension or @updateMode])=0"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="originalText" type="ED.TEXT" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ED.TEXT">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="text only">
+					<sch:rule abstract="true" id="ED.TEXT-0">
+						<sch:assert test="@mediaType = &#34;&#39;text/plain&#39;&#34;"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no xml">
+					<sch:rule abstract="true" id="ED.TEXT-1">
+						<sch:assert test="not(xml)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no data">
+					<sch:rule abstract="true" id="ED.TEXT-2">
+						<sch:assert test="not(data)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no integrityCheck">
+					<sch:rule abstract="true" id="ED.TEXT-3">
+						<sch:assert test="not(integrityCheck)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no thumbnail">
+					<sch:rule abstract="true" id="ED.TEXT-4">
+						<sch:assert test="not(thumbnail)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no compression">
+					<sch:rule abstract="true" id="ED.TEXT-5">
+						<sch:assert test="not(@compression)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no translations">
+					<sch:rule abstract="true" id="ED.TEXT-6">
+						<sch:assert test="not(translation)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="ED">
+				<xsd:sequence>
+					<xsd:element name="data" type="xsd:base64Binary" minOccurs="0" maxOccurs="0"/>
+					<xsd:element name="xml" type="xsd:anyType" minOccurs="0" maxOccurs="0"/>
+					<xsd:element name="reference" type="TEL.URL" minOccurs="0"/>
+					<xsd:element name="integrityCheck" type="xsd:base64Binary" minOccurs="0" maxOccurs="0"/>
+					<xsd:element name="thumbnail" type="ED" minOccurs="0" maxOccurs="0"/>
+					<xsd:element name="description" type="ST" minOccurs="0"/>
+					<xsd:element name="translation" type="ED" minOccurs="0" maxOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="mediaType" type="xsd:string" use="required" fixed="text/plain"/>
+				<xsd:attribute name="compression" type="Compression" use="prohibited"/>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ST">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="no nested translations">
+					<sch:rule abstract="true" id="ST-0">
+						<sch:assert test="not(translation) or thumbnail[not(translation)]"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="null or content">
+					<sch:rule abstract="true" id="ST-1">
+						<sch:assert test="(@nullFlavor or (@value and string-length(@value)&#38;gt;0)) and
+not(@nullFlavor and @value)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="translation" type="ST.NT" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:attribute name="value" type="xsd:string" use="optional"/>
+				<xsd:attribute name="language" type="Code" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ST.NT">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="no translations">
+					<sch:rule abstract="true" id="ST.NT-0">
+						<sch:assert test="not(translation)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="ST">
+				<xsd:sequence>
+					<xsd:element name="translation" type="ST.NT" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CD">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="null or code and/or originalText">
+					<sch:rule abstract="true" id="CD-0">
+						<sch:assert test="@nullFlavor or @code or (originalText and
+not(originalText/@nullFlavor) or (originalTextReference and
+not(originalTextReference/@nullFlavor))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="other requires codeSystem or valueSet">
+					<sch:rule abstract="true" id="CD-1">
+						<sch:assert test="@nullFlavor != &#34;OTH&#34; or @codeSystem or @valueSet"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="code requires codeSystem">
+					<sch:rule abstract="true" id="CD-2">
+						<sch:assert test="@codeSystem or not(@code)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="codeSystemName only if codeSystem">
+					<sch:rule abstract="true" id="CD-3">
+						<sch:assert test="@codeSystem or not(@codeSystemName)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="codeSystemVersion only if codeSystem">
+					<sch:rule abstract="true" id="CD-4">
+						<sch:assert test="@codeSystem or not(@codeSystemVersion)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="displayName only if code">
+					<sch:rule abstract="true" id="CD-5">
+						<sch:assert test="@code or not(@displayName)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="valueSet requires valueSetVersion">
+					<sch:rule abstract="true" id="CD-6">
+						<sch:assert test="not(@valueSet) or (@valueSet and @valueSetVersion)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="No original text on translations">
+					<sch:rule abstract="true" id="CD-7">
+						<sch:assert test="not translation/originalText"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="Translations cannot have translations">
+					<sch:rule abstract="true" id="CD-8">
+						<sch:assert test="not translation/translation"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no updateMode or History on CD elements">
+					<sch:rule abstract="true" id="CD-9">
+						<sch:assert test="count(*[self::displayName or self::originalText or
+self::originalTextReference or self::translation][@validTimeLow or @validTimeHigh or
+@controlActRoot or @controlActExtension or @updateMode])=0"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no code if null">
+					<sch:rule abstract="true" id="CD-10">
+						<sch:assert test="not(@nullFlavor) or (not(thumbnail) or code\@nullFlavor)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no displayName if null">
+					<sch:rule abstract="true" id="CD-11">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@displayName))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no source if null">
+					<sch:rule abstract="true" id="CD-12">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@source))"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="displayName" type="ST" minOccurs="0"/>
+					<xsd:element name="originalText" type="ED.TEXT" minOccurs="0"/>
+					<xsd:element name="translation" type="CD" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="source" type="XReference" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="code" type="xsd:string" use="optional"/>
+				<xsd:attribute name="codeSystem" type="Uid" use="optional"/>
+				<xsd:attribute name="codeSystemName" type="xsd:string" use="optional"/>
+				<xsd:attribute name="codeSystemVersion" type="xsd:string" use="optional"/>
+				<xsd:attribute name="valueSet" type="xsd:string" use="optional"/>
+				<xsd:attribute name="valueSetVersion" type="xsd:string" use="optional"/>
+				<xsd:attribute name="codingRationale" type="set_CodingRationale" use="optional"/>
+				<xsd:attribute name="id" type="xsd:ID" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="XReference">
+		<xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="TEL.EMAIL">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="email only">
+					<sch:rule abstract="true" id="TEL.EMAIL-0">
+						<sch:assert test="starts-with(@value, &#34;mailto&#34;)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="TEL.PERSON">
+				<xsd:sequence>
+					<xsd:element name="useablePeriod" type="QSET_TS" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TEL.PERSON">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="Personal Address">
+					<sch:rule abstract="true" id="TEL.PERSON-0">
+						<sch:assert test="starts-with(@value, &#34;tel&#34;) or starts-with(@value,
+&#34;x-text-fax&#34;) or starts-with(@value, &#34;x-text-tel&#34;) or starts-with(@value,
+&#34;mailto&#34;)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="TEL">
+				<xsd:sequence>
+					<xsd:element name="useablePeriod" type="QSET_TS" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="II">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="root is required">
+					<sch:rule abstract="true" id="II-0">
+						<sch:assert test="@nullFlavor or (not(@nullFlavor) and @root)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no root if null">
+					<sch:rule abstract="true" id="II-1">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@root))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no extension if null">
+					<sch:rule abstract="true" id="II-2">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@extension))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no identifierName if null">
+					<sch:rule abstract="true" id="II-3">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@identifierName))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no displayable if null">
+					<sch:rule abstract="true" id="II-4">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@displayable))"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no reliability if null">
+					<sch:rule abstract="true" id="II-5">
+						<sch:assert test="not(@nullFlavor) or (@nullFlavor and not(@reliability))"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:attribute name="root" type="Uid" use="optional"/>
+				<xsd:attribute name="extension" type="xsd:string" use="optional"/>
+				<xsd:attribute name="identifierName" type="xsd:string" use="optional"/>
+				<xsd:attribute name="displayable" type="xsd:boolean" use="optional"/>
+				<xsd:attribute name="scope" type="IdentifierScope" use="optional"/>
+				<xsd:attribute name="reliability" type="IdentifierReliability" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CD.CV">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="no translations">
+					<sch:rule abstract="true" id="CD.CV-0">
+						<sch:assert test="not(translation)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="no source">
+					<sch:rule abstract="true" id="CD.CV-1">
+						<sch:assert test="not(@source)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:restriction base="CD">
+				<xsd:sequence>
+					<xsd:element name="displayName" type="ST" minOccurs="0"/>
+					<xsd:element name="originalText" type="ED.TEXT" minOccurs="0"/>
+					<xsd:element name="translation" type="CD" minOccurs="0" maxOccurs="0"/>
+					<xsd:element name="source" type="XReference" minOccurs="0" maxOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="QTY" abstract="true">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="uncertainty">
+					<sch:rule abstract="true" id="QTY-0">
+						<sch:assert test="not(uncertainty/@expression) and not(uncertainty/@uncertainty)
+and not(uncertainty/@originalText)"/>
+					</sch:rule>
+				</sch:pattern>
+				<sch:pattern name="No History or Update Mode">
+					<sch:rule abstract="true" id="QTY-1">
+						<sch:assert test="count(*[self::originalText or self::uncertainty or
+self::expression][@validTimeLow or @validTimeHigh or @controlActRoot or @controlActExtension
+or @updateMode])=0"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ANY">
+				<xsd:sequence>
+					<xsd:element name="expression" type="ED" minOccurs="0"/>
+					<xsd:element name="originalText" type="ED.TEXT" minOccurs="0"/>
+					<xsd:element name="uncertainty" type="QTY" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attribute name="uncertaintyType" type="UncertaintyType" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TS">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sch:pattern name="null or value">
+					<sch:rule abstract="true" id="TS-0">
+						<sch:assert test="(@nullFlavor or @value) and not(@nullFlavor and @value)"/>
+					</sch:rule>
+				</sch:pattern>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="QTY">
+				<xsd:attribute name="value" use="optional">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:pattern value="[1-2][0-9]{3,3}(((0[1-9])|(1[0-2]))((0[1-9])|([0-2][0-9]|3[0-1])(([0-1][0-9]|2[0-3])([0-5][0-9]([0-5][0-9](\.[0-9]{1,4})?)?)?)?)?)?([+\-](0[0-9]|1[0-3])([0-5][0-9]))?"/>
+							<!--Ändrat så att dag kan vara mellan 01 och 09
+<xsd:pattern value="[1-2][0-9]{3,3}(((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9]|3[0-1])(([0-1][0-9]|2[0-3])([0-5][0-9]([0-5][0-9](\.[0-9]{1,4})?)?)?)?)?)?([+\-](0[0-9]|1[0-3])([0-5][0-9]))?"/>
+-->
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TS.DATE">
+		<xsd:complexContent>
+			<xsd:restriction base="TS">
+				<xsd:sequence>
+					<xsd:element name="expression" type="ED" minOccurs="0"/>
+					<xsd:element name="originalText" type="ED.TEXT" minOccurs="0"/>
+					<xsd:element name="uncertainty" type="QTY" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:restriction>
+			<!--	<xsd:attribute name="value" use="optional">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:pattern value="[1-2][0-9]{3,3}((0[1-9])|(1[0-2])((0[1-9])|([1-2][0-9]|3[0-1]))?)?"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>-->
+		</xsd:complexContent>
+	</xsd:complexType>	
+</xsd:schema>
