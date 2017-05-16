@@ -1,28 +1,26 @@
 package main
 
 import (
-	"net/http"
-	"flag"
+	"crypto/x509"
 	"encoding/json"
+	"flag"
+	ph "github.com/advptr/reverse-proxy/proxyhandler"
 	"io/ioutil"
 	"log"
-	ph "github.com/advptr/reverse-proxy/proxyhandler"
-	"crypto/x509"
+	"net/http"
 )
 
 // Main config
 type Config struct {
-	TrustFiles []string `json:"trust-files"`
-	Routes []ph.Route `json:"routes""`
+	TrustFiles []string   `json:"trust-files"`
+	Routes     []ph.Route `json:"routes""`
 }
-
 
 // Program  Options
 type Options struct {
 	ServerAddress string
 	ConfigFile    string
 }
-
 
 // Main Bootstrap
 func main() {
@@ -41,7 +39,6 @@ func main() {
 	}
 }
 
-
 // Parse command args
 func args() Options {
 	const (
@@ -58,19 +55,18 @@ func args() Options {
 }
 
 //
-func (c *Config) trustedCertPool() (*x509.CertPool) {
+func (c *Config) trustedCertPool() *x509.CertPool {
 	trustedCertPool := x509.NewCertPool()
 	for _, file := range c.TrustFiles {
 		trustedCert, err := ioutil.ReadFile(file)
 		if err != nil {
 			log.Fatal(err)
 		}
-		trustedCertPool.AppendCertsFromPEM(trustedCert);
+		trustedCertPool.AppendCertsFromPEM(trustedCert)
 	}
 
 	return trustedCertPool
 }
-
 
 // Unmarshal routes from JSON configuration file
 func config(configFile string) Config {
@@ -85,4 +81,3 @@ func config(configFile string) Config {
 	}
 	return config
 }
-
