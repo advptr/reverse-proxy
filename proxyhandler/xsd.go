@@ -3,10 +3,10 @@ package proxyhandler
 import (
 	"encoding/xml"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
-	"log"
 )
 
 func ParseXSDFile(fname string) ([]xsdSchema, error) {
@@ -36,11 +36,7 @@ func parse(r io.Reader, fname string, parsedFiles map[string]struct{}) ([]xsdSch
 	dir, file := filepath.Split(fname)
 	parsedFiles[file] = struct{}{}
 
-	refs := schema.Imports
-	for _, inc := range schema.Includes {
-		refs = append(refs, inc)
-	}
-	for _, imp := range refs {
+	for _, imp := range schema.allImpInc() {
 		if _, ok := parsedFiles[imp.Location]; ok {
 			continue
 		}
@@ -72,6 +68,15 @@ func (s xsdSchema) ns() string {
 		return split[len(split)-2]
 	}
 	return ""
+}
+
+// all imports and includes
+func (s xsdSchema) allImpInc() []xsdImport {
+	all := s.Imports
+	for _, inc := range s.Includes {
+		all = append(all, inc)
+	}
+	return all
 }
 
 type xsdImport struct {

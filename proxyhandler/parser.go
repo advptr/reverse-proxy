@@ -2,10 +2,10 @@ package proxyhandler
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io"
 	"log"
 	"strings"
-	"fmt"
 )
 
 // A Parser reads XML objects from an input stream.
